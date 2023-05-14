@@ -22,7 +22,7 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-22.04
-    timeout-minutes: 15
+    timeout-minutes: 45
     steps:
       -
         name: Git Checkout
@@ -49,7 +49,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
-          platforms: linux/amd64, linux/arm64, linux/armhf
+          platforms: linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8,linux/ppc64le,7bb154e7c66a,linux/s390x
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
             finchsec/scapy:latest
