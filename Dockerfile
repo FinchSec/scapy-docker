@@ -1,4 +1,4 @@
-FROM python:3.11-bullseye 
+FROM python:3.11-bullseye
 LABEL org.opencontainers.image.authors="thomas@finchsec.com"
 # hadolint ignore=DL3005,DL3008
 RUN apt-get update && \
