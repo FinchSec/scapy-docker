@@ -15,4 +15,4 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     apt-get autoclean && \
     rm -rf /var/lib/dpkg/status-old /var/lib/apt/lists/*
-CMD [ "/scapy-master/run_scapy" ]
+CMD [ "/scapy/run_scapy" ]
