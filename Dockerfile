@@ -4,7 +4,7 @@ LABEL org.opencontainers.image.authors="thomas@finchsec.com"
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get autoclean && \
-    apt-get install texlive unzip wget ca-certificates -y --no-install-recommends && \
+    apt-get install texlive unzip wget ca-certificates rustc -y --no-install-recommends && \
     pip install --no-cache-dir ipython && \
     pip install --no-cache-dir pyx && \
     pip install --no-cache-dir cryptography && \
@@ -12,7 +12,7 @@ RUN apt-get update && \
     unzip master.zip && \
     rm master.zip && \
     mv scapy-master/ scapy/ && \
-    apt-get purge unzip wget ca-certificates -y && \
+    apt-get purge unzip wget ca-certificates rustc -y && \
     apt-get autoremove -y && \
     apt-get autoclean && \
     rm -rf /var/lib/dpkg/status-old /var/lib/apt/lists/*
