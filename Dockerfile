@@ -4,9 +4,10 @@ LABEL org.opencontainers.image.authors="thomas@finchsec.com"
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get autoclean && \
-    apt-get install texlive python3-cryptography unzip wget ca-certificates -y --no-install-recommends && \
+    apt-get install texlive unzip wget ca-certificates -y --no-install-recommends && \
     pip install --no-cache-dir ipython && \
     pip install --no-cache-dir pyx && \
+    pip install --no-cache-dir cryptography && \
     wget -nv https://github.com/secdev/scapy/archive/refs/heads/master.zip && \
     unzip master.zip && \
     rm master.zip && \
