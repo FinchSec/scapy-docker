@@ -1,7 +1,8 @@
+# syntax=docker/dockerfile:1-labs
 FROM python:3.12-slim-bookworm
 LABEL org.opencontainers.image.authors="thomas@finchsec.com"
 # hadolint ignore=DL3005,DL3008,DL3013
-RUN apt-get update && \
+RUN --security=insecure apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get autoclean && \
     apt-get install -y --no-install-recommends texlive unzip wget ca-certificates \
@@ -10,6 +11,7 @@ RUN apt-get update && \
             $([ "$(dpkg --print-architecture)" = "armhf" ] && echo libffi-dev) && \
     pip install --no-cache-dir ipython && \
     pip install --no-cache-dir pyx && \
+    mkdir -p /root/.cargo && chmod 777 /root/.cargo && mount -t tmpfs none /root/.cargo && \
     pip install --no-cache-dir cryptography && \
     wget -nv https://github.com/secdev/scapy/archive/refs/heads/master.zip && \
     unzip master.zip && \
