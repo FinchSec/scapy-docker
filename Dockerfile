@@ -4,7 +4,10 @@ LABEL org.opencontainers.image.authors="thomas@finchsec.com"
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get autoclean && \
-    apt-get install texlive unzip wget ca-certificates rustc cargo pkg-config libssl-dev -y --no-install-recommends && \
+    apt-get install -y --no-install-recommends texlive unzip wget ca-certificates \
+            $([ "$(dpkg --print-architecture)" != "amd64" ] && echo rustc cargo pkg-config libssl-dev) \
+            $([ "$(dpkg --print-architecture)" = "armel" ] && echo libffi-dev) \
+            $([ "$(dpkg --print-architecture)" = "armhf" ] && echo libffi-dev) && \
     pip install --no-cache-dir ipython && \
     pip install --no-cache-dir pyx && \
     pip install --no-cache-dir cryptography && \
@@ -12,7 +15,8 @@ RUN apt-get update && \
     unzip master.zip && \
     rm master.zip && \
     mv scapy-master/ scapy/ && \
-    apt-get purge unzip wget ca-certificates rustc cargo pkg-config libssl-dev -y && \
+    apt-get purge -y unzip wget ca-certificates \
+        $([ "$(dpkg --print-architecture)" != "amd64" ] && echo rustc cargo pkg-config libssl-dev) && \
     apt-get autoremove -y && \
     apt-get autoclean && \
     rm -rf /var/lib/dpkg/status-old /var/lib/apt/lists/*
