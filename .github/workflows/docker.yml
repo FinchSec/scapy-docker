@@ -110,7 +110,7 @@ jobs:
     steps:
       -
         name: Download digests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           path: /tmp/digests
           name: digests
