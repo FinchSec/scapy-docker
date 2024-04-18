@@ -1,4 +1,4 @@
-FROM debian:testing
+FROM debian:testing-slim
 LABEL org.opencontainers.image.authors="thomas@finchsec.com"
 # hadolint ignore=DL3005,DL3008,DL3013
 RUN apt-get update && \
