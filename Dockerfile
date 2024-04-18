@@ -1,14 +1,11 @@
-FROM python:3.12-slim-bookworm
+FROM debian:testing
 LABEL org.opencontainers.image.authors="thomas@finchsec.com"
 # hadolint ignore=DL3005,DL3008,DL3013
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get autoclean && \
-    apt-get install -y --no-install-recommends texlive unzip wget ca-certificates python3-cryptography \
-            $([ "$(dpkg --print-architecture)" = "armel" ] && echo libffi-dev) \
-            $([ "$(dpkg --print-architecture)" = "armhf" ] && echo libffi-dev) && \
-    pip install --no-cache-dir ipython && \
-    pip install --no-cache-dir pyx && \
+    apt-get install texlive unzip wget ca-certificates python3-cryptography \
+                    python3-ipython python3-pyx -y --no-install-recommends && \
     wget -nv https://github.com/secdev/scapy/archive/refs/heads/master.zip && \
     unzip master.zip && \
     rm master.zip && \
