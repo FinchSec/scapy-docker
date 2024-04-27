@@ -36,7 +36,7 @@ jobs:
         with:
           dockerfile: 'Dockerfile'
 
-  build:
+  build-debian:
     runs-on: ubuntu-22.04
     timeout-minutes: 180
     needs:
@@ -103,11 +103,73 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+  build-alpine:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+    needs:
+      - lint
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/arm/v6
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.alpine
+          allow: security.insecure
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+      -
+        name: Export digest
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+      -
+        name: Upload digest
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: digests
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
   merge:
     runs-on: ubuntu-22.04
     if: github.event_name != 'pull_request'
     needs:
-      - build
+      - build-debian
+      - build-alpine
     steps:
       -
         name: Download digests

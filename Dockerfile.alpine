@@ -1,0 +1,14 @@
+FROM alpine:3
+LABEL org.opencontainers.image.authors="thomas@finchsec.com"
+# hadolint ignore=DL3005,DL3008,DL3013
+RUN apk add --no-cache --virtual temp unzip wget ca-certificates py3-pip && \
+    apk add --no-cache texlive py3-cryptography ipython && \
+    pip install --break-system-packages pyx && \
+    wget -nv https://github.com/secdev/scapy/archive/refs/heads/master.zip && \
+    unzip master.zip && \
+    rm master.zip && \
+    mv scapy-master/ scapy/ && \
+    apk del temp && \
+    rm /scapy/run_scapy.bat
+RUN uname -a
+CMD [ "/scapy/run_scapy" ]
